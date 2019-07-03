@@ -1,0 +1,55 @@
+---
+  - hosts: icinga_master
+    tasks:
+
+    - name: Include vars
+      include_vars:
+        file: vars
+
+    - name: Template a file to {{ hosts_path }}
+      template:
+        src: templates/HOST.conf
+        dest: "{{ hosts_path }} + HOST.conf"
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Add hostname to config
+      replace:
+        path: "{{ hosts_path }} + HOST.conf"
+        regexp: "HOST"
+        replace: "{{ hostname }}"
+
+    - name: Add ip address to config
+      replace:
+        path: "{{ hosts_path }} + HOST.conf"
+        regexp: "IP_ADDRESS"
+        replace: "{{ ip_address }}"
+
+    - name: Add os to config
+      replace:
+        path: "{{ hosts_path }} + HOST.conf"
+        regexp: "OS"
+        replace: "{{ os }}"
+
+    - name: Add ports to config
+      replace:
+        path: "{{ hosts_path }} + HOST.conf"
+        regexp: PORTS
+        replace: "{{ ports }}"
+
+    - name: Rename config file
+      copy:
+        remote_src: True
+        src: "{{ hosts_path }} + HOST.conf"
+        dest: "{{ hosts_path + hostname }}"
+
+    - name: Remove HOST.conf
+      file:
+        path: "{{ hosts_path }} + HOST.conf"
+        state: absent
+
+    - name: reload icinga config
+      systemd:
+        state: reloaded
+        name: icinga2.service

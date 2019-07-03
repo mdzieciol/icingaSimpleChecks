@@ -1,0 +1,5 @@
+hosts_path: /etc/icinga2/conf.d/hosts/
+hostname: example
+ip_address: 127.0.0.1
+os: Linux
+ports: "22"
