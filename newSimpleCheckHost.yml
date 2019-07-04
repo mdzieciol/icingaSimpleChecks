@@ -42,7 +42,7 @@
       copy:
         remote_src: True
         src: "{{ hosts_path }} + HOST.conf"
-        dest: "{{ hosts_path + hostname }}"
+        dest: "{{ hosts_path + hostname }} + .conf"
 
     - name: Remove HOST.conf
       file:
